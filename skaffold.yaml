@@ -1,0 +1,15 @@
+apiVersion: skaffold/v2beta21
+kind: Config
+metadata:
+  name: api-product-go
+build:
+  artifacts:
+  - image: api
+    context: src
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - k8s/mysql/deploy.yaml
+    - k8s/api/service.yaml
