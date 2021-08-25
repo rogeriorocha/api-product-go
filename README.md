@@ -1,10 +1,3 @@
-```{r, attr.source='.numberLines startFrom="5"'}
-if (TRUE) {
-  1:10
-}
-```
-
-
 # About
 Sample REST API in ***golang***.
 
