@@ -10,25 +10,24 @@ Sample REST API in ***golang***.
 
 
 
-
 ## services
 * ***api*** REST;
 * ***mySql*** database.
  
 ### Start Skaffold deploy
-```sh
+```shell=
 skaffold dev --port-forward  --trigger polling
 ```
 
 ### methods
 
 * ***get*** ALL products
-```sh
+```shell=
 curl http://localhost:8080/products
 ```
 
 * ***post*** add one product
-```sh
+```shell=
 curl http://localhost:8080/products \
     --include \
     --header "Content-Type: application/json" \
@@ -48,12 +47,12 @@ curl http://localhost:8080/products \
     --data '{"id": "3","name": "Server z","value": 90000.00}'
 ````
 * ***get*** ONE product
-```sh
+```shell=
 curl http://localhost:8080/products/1    
 
 ````
 * ***put*** change ONE product
-```sh
+```shell=
 curl http://localhost:8080/products/1 \
     --include \
     --header "Content-Type: application/json" \
@@ -61,7 +60,7 @@ curl http://localhost:8080/products/1 \
     --data '{"value": 11500.99}'    
 ````
 * ***delete*** ONE product
-```sh
+```shell=
 curl http://localhost:8080/products/1 \
     --include \
     --header "Content-Type: application/json" \
