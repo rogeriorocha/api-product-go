@@ -15,16 +15,25 @@ func main() {
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, "pong")
-	})
-
 	ProductRepo := controllers.New()
-	r.POST("/products", ProductRepo.CreateProduct)
-	r.GET("/products", ProductRepo.GetProducts)
-	r.GET("/products/:id", ProductRepo.GetProduct)
-	r.PUT("/products/:id", ProductRepo.UpdateProduct)
-	r.DELETE("/products/:id", ProductRepo.DeleteProduct)
+
+	v1 := r.Group("/api/v1")
+	{
+		products := v1.Group("/products")
+		{
+			products.POST("", ProductRepo.CreateProduct)
+			products.GET("", ProductRepo.GetProducts)
+			products.GET(":id", ProductRepo.GetProduct)
+			products.PUT(":id", ProductRepo.UpdateProduct)
+			products.DELETE(":id", ProductRepo.DeleteProduct)
+		}
+		examples := v1.Group("/examples")
+		{
+			examples.GET("ping", func(c *gin.Context) {
+				c.JSON(http.StatusOK, "pong")
+			})
+		}
+	}
 
 	return r
 }

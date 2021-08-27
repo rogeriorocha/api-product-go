@@ -21,26 +21,31 @@ skaffold dev --port-forward  --trigger polling
 
 ### methods
 
+* Set API_URL
+```shell=
+export API_URL="http://localhost:8080/api/v1/products"
+```
+
 * ***get*** ALL products
 ```shell=
-curl http://localhost:8080/products
+curl $API_URL
 ```
 
 * ***post*** add one product
 ```shell=
-curl http://localhost:8080/products \
+curl $API_URL \
     --include \
     --header "Content-Type: application/json" \
     --request "POST" \
     --data '{"id": "1","name": "bike","value": 4009.99}'
 
-curl http://localhost:8080/products \
+curl $API_URL \
     --include \
     --header "Content-Type: application/json" \
     --request "POST" \
     --data '{"id": "2","name": "ebook x","value": 5.00}'
 
-curl http://localhost:8080/products \
+curl $API_URL \
     --include \
     --header "Content-Type: application/json" \
     --request "POST" \
@@ -48,12 +53,12 @@ curl http://localhost:8080/products \
 ````
 * ***get*** ONE product
 ```shell=
-curl http://localhost:8080/products/1    
+curl $API_URL/1
 
 ````
 * ***put*** change ONE product
 ```shell=
-curl http://localhost:8080/products/1 \
+curl $API_URL/1 \
     --include \
     --header "Content-Type: application/json" \
     --request "PUT" \
@@ -61,7 +66,7 @@ curl http://localhost:8080/products/1 \
 ````
 * ***delete*** ONE product
 ```shell=
-curl http://localhost:8080/products/1 \
+curl $API_URL/1 \
     --include \
     --header "Content-Type: application/json" \
     --request "DELETE"
