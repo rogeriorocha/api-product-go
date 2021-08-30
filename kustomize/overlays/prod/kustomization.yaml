@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: prod
+
+patchesStrategicMerge:
+- mysql_env.yaml
+- api_env.yaml
+- api_replicas.yaml
+
+configMapGenerator:
+  - name: product-mysql-config
+    literals:
+      - MYSQL_USER=u_product
+      - MYSQL_ROOT_HOST="%"
+      - MYSQL_DATABASE="product"
+
+secretGenerator:
+  - name: product-mysql-credentials
+    type: Opaque
+    literals:
+      - MYSQL_PASSWORD="senha@prod"
+      - MYSQL_ROOT_PASSWORD="root@prod"
+resources:
+- ../../base

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        env:
+          - name: env
+            value: nil
+        ports:
+          - containerPort: 3306
+            name: mysql
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "400m"

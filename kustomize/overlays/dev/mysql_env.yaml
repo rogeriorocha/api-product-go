@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  template:
+    spec:
+      containers:
+      - name: mysql
+        env:
+        - name: env
+          value: in-dev
+        envFrom:
+          - configMapRef:
+              name: product-mysql-config
+          - secretRef:
+              name: product-mysql-credentials

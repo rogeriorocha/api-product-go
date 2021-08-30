@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:  
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8080"        
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: rogeriosilvarocha/api:0.1
+          ports: 
+          - containerPort: 8080
+          env: 
+          - name: env
+            value : nil
+          - name: DB_USER
+            value: 'u_product'
+#          - name: DB_PASS
+#            value: "AUTO"  
+          - name: DB_HOST
+            value: "mysql"
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_NAME
+            value: "product"
+          resources:
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
