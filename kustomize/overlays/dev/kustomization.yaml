@@ -19,7 +19,7 @@ configMapGenerator:
 secretGenerator:
 - literals:
   - MYSQL_PASSWORD="senha@dese"
-  - MYSQL_ROOT_PASSWORD="root@dese"
+  - MYSQL_ROOT_PASSWORD="root@desee"
   name: product-mysql-credentials
   type: Opaque
 resources:
