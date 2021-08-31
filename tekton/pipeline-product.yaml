@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: pipeline-product
+spec:
+  resources:
+    - name: source-git
+      type : git
+  tasks:
+    - name: build-and-push-image
+      taskRef: 
+        name: product-ci
+      resources:
+        inputs:
+          - name: source
+            resource: source-git
+      params:      
+        - name: OUTPUT
+          value: rogeriosilvarocha/aaa:latest

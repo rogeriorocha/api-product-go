@@ -1,0 +1,13 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  name: product-taskrun
+spec:
+  inputs:
+    resources:
+      - name: source
+        resourceRef:
+          name: product
+  taskRef:
+    name: product-ci
+

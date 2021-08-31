@@ -1,0 +1,77 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: product-ci
+spec:
+  inputs:
+    resources:
+      - name: source
+        type: git
+    params:
+      - name: OUTPUT
+        description: image to build
+        #default: otavio-typescript-ex:latest
+        default: rogeriosilvarocha/api-product:latest
+  steps:
+    # - name: npm-install
+    #   image: node
+    #   command: 
+    #     - /bin/sh
+    #     - -c
+    #   args:
+    #     - npm install
+    #   workingDir: /workspace/product
+    # - name: test
+    #   image: node
+    #   command:
+    #     - /bin/sh
+    #     - -c 
+    #   args:
+    #     - npm run test
+    #   workingDir: /workspace/product
+    # - name: build
+    #   image: node
+    #   command:
+    #     - /bin/sh
+    #     - -c 
+    #   args:
+    #     - npm run build
+    #   workingDir: /workspace/product
+    - name: build-image
+      image: quay.io/buildah/upstream:latest
+      securityContext:
+        runAsUser: 0
+        privileged: true
+      workingDir: /workspace/source/src
+      script: |
+        buildah bud \
+          --tag=$(params.OUTPUT) \
+          .          
+      volumeMounts:
+        - name: containers-storage
+          mountPath: /var/lib/containers
+    - name: push-image
+      image: quay.io/buildah/upstream:latest
+      securityContext:
+        runAsUser: 0
+        privileged: true
+      script: |
+        buildah push --tls-verify=false $(params.OUTPUT)
+      volumeMounts:
+        - name: containers-storage
+          mountPath: /var/lib/containers
+  volumes:         
+    - name: containers-storage
+      emptyDir: {}
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: product
+spec:
+  type: git
+  params:
+    - name: revision
+      value: main
+    - name: url
+      value: "https://github.com/rogeriorocha/api-product-go.git"
