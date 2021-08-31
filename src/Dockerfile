@@ -1,4 +1,4 @@
-FROM golang:alpine
+FROM docker.io/golang:alpine
 #FROM golang
 
 RUN mkdir /app
