@@ -9,17 +9,21 @@ patchesStrategicMerge:
 - api_replicas.yaml
 
 configMapGenerator:
-  - name: product-mysql-config
-    literals:
-      - MYSQL_USER=u_product
-      - MYSQL_ROOT_HOST="%"
-      - MYSQL_DATABASE="product"
+- literals:
+  - MYSQL_USER=u_product
+  - MYSQL_ROOT_HOST="%"
+  - MYSQL_DATABASE="product"
+  name: product-mysql-config
 
 secretGenerator:
-  - name: product-mysql-credentials
-    type: Opaque
-    literals:
-      - MYSQL_PASSWORD="senha@prod"
-      - MYSQL_ROOT_PASSWORD="root@prod"
+- literals:
+  - MYSQL_PASSWORD="senha@prod"
+  - MYSQL_ROOT_PASSWORD="root@prod"
+  name: product-mysql-credentials
+  type: Opaque
 resources:
 - ../../base
+images:
+- name: rogeriosilvarocha/api
+  newName: rogeriosilvarocha/api
+  newTag: 1b51a0b
