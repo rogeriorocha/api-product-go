@@ -11,7 +11,7 @@ spec:
       - name: OUTPUT
         description: image to build
         #default: otavio-typescript-ex:latest
-        default: rogeriosilvarocha/api-product:latest
+        default: rogeriosilvarocha/api-product-k:latest
   steps:
     # - name: npm-install
     #   image: node
