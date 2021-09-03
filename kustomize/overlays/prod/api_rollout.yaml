@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1  
+kind: Rollout
+metadata:
+  name: rollout-api-deployment
+spec:
+  replicas: 5
+  workloadRef:                                 # Reference an existing Deployment using workloadRef field
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20
+        - pause: {}
+        - setWeight: 40
+        - pause:
+            duration: 10
+        - setWeight: 60
+        - pause:
+            duration: 10
+        - setWeight: 80
+        - pause:
+            duration: 20
