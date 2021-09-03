@@ -23,5 +23,5 @@ spec:
             name: mysql
         resources:
           limits:
-            memory: "256Mi"
+            memory: "512Mi"
             cpu: "400m"
