@@ -6,3 +6,6 @@ resources:
   - mysql_svc.yaml
   - api_deploy.yaml
   - api_svc.yaml
+  
+configurations:
+  - https://argoproj.github.io/argo-rollouts/features/kustomize/rollout-transform.yaml  

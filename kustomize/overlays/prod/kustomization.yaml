@@ -9,6 +9,7 @@ patchesStrategicMerge:
 - api_replicas.yaml
 - api_rollout.yaml
 
+
 configMapGenerator:
 - literals:
   - MYSQL_USER=u_product
@@ -29,5 +30,3 @@ images:
   newName: rogeriosilvarocha/api
   newTag: 1b51a0b
 
-configurations:
-  - https://argoproj.github.io/argo-rollouts/features/kustomize/rollout-transform.yaml

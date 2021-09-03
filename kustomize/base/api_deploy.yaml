@@ -1,6 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app.kubernetes.io/instance: rollout-canary
   name: api
 spec:
   replicas: 1
@@ -38,3 +40,20 @@ spec:
             limits:
               memory: "64Mi"
               cpu: "100m"
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: api
+spec:
+  replicas: 5
+  workloadRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+  strategy:
+    canary:
+      steps:
+        - setWeight: 50
+        - pause:
+            duration: 120

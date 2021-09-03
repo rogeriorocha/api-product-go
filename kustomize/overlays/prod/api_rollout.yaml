@@ -1,17 +1,10 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: api
-  labels:
-    app.kubernetes.io/instance: rollout-canary
----
-apiVersion: argoproj.io/v1alpha1  
+apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: rollout-api-deployment
+  name: api
 spec:
   replicas: 5
-  workloadRef:                                 # Reference an existing Deployment using workloadRef field
+  workloadRef:
     apiVersion: apps/v1
     kind: Deployment
     name: api
@@ -28,4 +21,4 @@ spec:
             duration: 10
         - setWeight: 80
         - pause:
-            duration: 20
+            duration: 40
