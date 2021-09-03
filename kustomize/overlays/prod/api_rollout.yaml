@@ -1,3 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app.kubernetes.io/instance: rollout-canary
+---
 apiVersion: argoproj.io/v1alpha1  
 kind: Rollout
 metadata:
