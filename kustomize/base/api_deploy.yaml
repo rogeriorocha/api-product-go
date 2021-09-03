@@ -38,8 +38,8 @@ spec:
             value: "product"
           resources:
             limits:
-              memory: "64Mi"
-              cpu: "100m"
+              memory: "128Mi"
+              cpu: "600m"
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
