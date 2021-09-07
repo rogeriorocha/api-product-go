@@ -1,6 +1,23 @@
 # About
 Sample REST API in ***golang***.
 
+![](https://img.shields.io/github/last-commit/rogeriorocha/api-product-go)
+
+<!--
+## ⚡ Technologies
+![Tekton](https://img.shields.io/badge/-Tekton-FD495C?style=flat-square&logo=tekton&logoColor=white)
+
+![ArgoCD](https://img.shields.io/badge/-Argo-red?style=flat-square&logo=argocd&logoColor=white)
+
+![Kubernetes](https://img.shields.io/badge/-Kubernetes-blue?style=flat-square&logo=kubernetes&logoColor=white)
+![Docker](https://img.shields.io/badge/-Docker-white?style=flat-square&logo=docker&logoColor=blue)
+![Golang](https://img.shields.io/badge/-GO-white?style=flat-square&logo=go&logoColor=311C87)
+![MySQL](https://img.shields.io/badge/-MySQL-black?style=flat-square&logo=mysql)
+
+![GitHub](https://img.shields.io/badge/-GitHub-181717?style=flat-square&logo=github)
+-->
+
+
 ## Requirements:
 - [Skaffold](https://skaffold.dev/) - Local Kubernetes Development
 - [Kubernetes Cluster](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/) (eg [k3d](https://k3d.io/) local cluster)
