@@ -1,0 +1,88 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy
+spec:
+  params:
+  - name: environment
+    default: "prod"
+  - name: argo-app-name
+    default: "api-product-prod"
+  - name: configGitUrl
+    default: "git@github.com:rogeriorocha/api-product-go.git"
+  - name: appImage
+    default: "rogeriosilvarocha/api"
+  - name: buildRevision
+    default: "0.1"
+  workspaces:
+  - name: config-source
+  stepTemplate:
+    envFrom:
+      - secretRef:
+          name: argocd-env-secret
+    env:
+    - name: ARGOCD_SERVER
+      value: argocd-server.argocd
+    - name: BRANCH
+      value: main
+  steps:
+  - name: git-checkout
+    image: alpine/git:v2.26.2
+    workingDir: "$(workspaces.config-source.path)"
+    script: |
+      #!/usr/bin/env sh
+      set -e
+      eval $(ssh-agent)
+      ssh-add ~/.ssh/id_*
+      git config --global core.sshCommand 'ssh -o StrictHostKeyChecking=accept-new'
+      git init
+      git remote add origin $(params.configGitUrl)
+      git fetch --depth 1 origin $BRANCH
+      git checkout $BRANCH
+      
+  - name: update-yaml
+    image: quay.io/wpernath/kustomize-ubi:latest
+    #workingDir: "$(workspaces.config-source.path)/$(inputs.params.environment)"
+    workingDir: "$(workspaces.config-source.path)"
+    script: |
+      #!/usr/bin/env sh
+      set -e
+      cd kustomize/overlays/$(inputs.params.environment)
+      echo "updating -> kustomize edit set image $(inputs.params.appImage)=$(inputs.params.appImage):$(inputs.params.buildRevision)"
+      kustomize edit set image $(inputs.params.appImage)=$(inputs.params.appImage):$(inputs.params.buildRevision)
+  - name: commit-push-changes-gitops
+    image: alpine/git:v2.26.2
+    #workingDir: "$(workspaces.config-source.path)/$(inputs.params.environment)"
+    workingDir: "$(workspaces.config-source.path)"
+    script: |
+      #!/usr/bin/env sh
+      set -e
+      eval $(ssh-agent)
+      git config --global user.email "tekton@tekton.dev"
+      git config --global user.name "Tekton Pipeline"
+      echo sleep infinity
+      git add .
+      git commit --allow-empty -m "[tekton] updating $(inputs.params.environment) image to $(inputs.params.buildRevision)"
+      ssh-add ~/.ssh/id_*
+      git push origin $BRANCH
+  - name: wait-for-argocd-rollout
+    image: argoproj/argocd:v1.7.7
+    script: |
+      #!/usr/bin/env sh
+      set -e
+      echo sleep infinity
+      argocd app sync $(inputs.params.argo-app-name) --insecure
+      argocd app wait $(inputs.params.argo-app-name) --sync --health --operation --insecure
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: deploy-taskrun-
+spec:
+  serviceAccountName: pipeline
+  taskRef:
+    name: deploy
+  workspaces:
+    - name: config-source
+      emptyDir: {}
+---
