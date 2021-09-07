@@ -3,6 +3,8 @@ Sample REST API in ***golang***.
 
 ![](https://img.shields.io/github/last-commit/rogeriorocha/api-product-go)
 
+![](https://img.shields.io/github/commit-activity/m/rogeriorocha/api-product-go)
+
 <!--
 ## ⚡ Technologies
 ![Tekton](https://img.shields.io/badge/-Tekton-FD495C?style=flat-square&logo=tekton&logoColor=white)
