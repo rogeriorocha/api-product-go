@@ -45,3 +45,15 @@ kubectl create secret docker-registry $NAME \
 ### add secret to sa 
 kubectl edit sa default 
 ```
+
+
+
+
+
+
+helm upgrade --install traefik \
+    --namespace traefik \
+    --set dashboard.enabled=true \
+    --set="additionalArguments={--api.dashboard=true,--log.level=INFO,--providers.kubernetesingress.ingressclass=traefik-internal,--serversTransport.insecureSkipVerify=true}" \
+    traefik/traefik \
+    --version 9.1.1
