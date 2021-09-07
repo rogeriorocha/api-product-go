@@ -1,5 +1,7 @@
 # About
-Sample REST API in ***golang***.
+DevOps Cloud-native CI/CD GitOps with Tekton & ArgoCD.
+
+write REST API sample in ***golang***.
 
 ![](https://img.shields.io/github/last-commit/rogeriorocha/api-product-go)
 
