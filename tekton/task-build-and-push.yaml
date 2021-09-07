@@ -1,0 +1,96 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-go-app
+spec:
+  params:
+  - name: buildRevision
+#    default: "main"
+  - name: appGitUrl
+#    default: "git@github.com:rogeriorocha/api-product-go.git"
+  - name: appImage
+#    default: "rogeriosilvarocha/api"  
+  workspaces:
+  - name: app-source
+
+  steps:
+  - name: git-checkout
+    image: alpine/git:v2.26.2
+    workingDir: "$(workspaces.app-source.path)"
+    script: |
+      #!/usr/bin/env sh
+      set -e
+      eval $(ssh-agent)
+      ssh-add ~/.ssh/id_*
+      git config --global core.sshCommand 'ssh -o StrictHostKeyChecking=accept-new'
+      git init
+      git remote add origin $(params.appGitUrl)
+      git fetch --depth 1 origin $(params.buildRevision)
+      git checkout FETCH_HEAD
+#  - name: build-sources
+#    image: sdaschner/maven-jdk14:quarkus-deps-1.5.1-b5
+#    workingDir: "$(workspaces.app-source.path)/app"
+#    command:
+#    - /usr/bin/mvn
+#    args:
+#    - clean
+#    - package
+
+  - name: build-image
+    image: quay.io/buildah/stable
+    workingDir: "$(workspaces.app-source.path)/src"
+    command: ['buildah', 'bud', '--tls-verify=false', '--layers', '-f', 'Dockerfile', '-t', '$(params.appImage):$(params.buildRevision)', '.']
+    volumeMounts:
+    - name: varlibc
+      mountPath: /var/lib/containers
+    securityContext:
+      allowPrivilegeEscalation: true
+      runAsUser: 0
+      privileged: true
+
+  - name: build-push
+    image: quay.io/buildah/stable
+    command: ["buildah", "push", "--tls-verify=false", "$(params.appImage):$(params.buildRevision)", "docker://$(params.appImage):$(params.buildRevision)"]
+    volumeMounts:
+    - name: varlibc
+      mountPath: /var/lib/containers
+    securityContext:
+      allowPrivilegeEscalation: true
+      runAsUser: 0
+      privileged: true
+
+  - name: build-push-latest
+    image: quay.io/buildah/stable
+    command: ["buildah", "push", "--tls-verify=false", "$(params.appImage):$(params.buildRevision)", "docker://$(params.appImage):latest"]
+    volumeMounts:
+    - name: varlibc
+      mountPath: /var/lib/containers
+    securityContext:
+      allowPrivilegeEscalation: true
+      runAsUser: 0
+      privileged: true
+
+
+  volumes:
+  - name: varlibc
+    emptyDir: {}
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: build-go-app-taskrun-
+spec:
+  serviceAccountName: pipeline
+  params:
+    - name: buildRevision
+      value: "main"
+    - name: appGitUrl
+      value: "git@github.com:rogeriorocha/api-product-go.git"
+    - name: appImage
+      value: "rogeriosilvarocha/api"  
+  taskRef:
+    name: build-go-app
+  workspaces:
+    - name: app-source
+      emptyDir: {}
+---

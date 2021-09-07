@@ -1,0 +1,83 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-deploy
+spec:
+  params:
+  - name: buildRevision
+    description: The revision of the build, i.e. the commit revision of the application repository
+  - name: appGitUrl
+    description: The application repository
+  - name: configGitUrl
+    description: The application config (GitOps) repository
+  - name: appImage
+    description: The application Docker image name
+  - name: argo-app-name
+    description: Argo app  
+  workspaces:
+  - name: app-source
+  - name: config-source
+
+  tasks:
+  - name: build-go-app
+    taskRef:
+      name: build-go-app
+    params:
+    - name: buildRevision
+      value: $(params.buildRevision)
+    - name: appGitUrl
+      value: $(params.appGitUrl)
+    - name: appImage
+      value: $(params.appImage)
+    workspaces:
+    - name: app-source
+      workspace: app-source
+
+  - name: deploy-prod
+    taskRef:
+      name: deploy
+    runAfter:
+    - build-go-app
+    params:
+    - name: environment
+      value: prod
+    - name: argo-app-name
+      value: $(params.argo-app-name)
+    - name: configGitUrl
+      value: $(params.configGitUrl)
+    - name: appImage
+      value: $(params.appImage)
+    - name: buildRevision
+      value: $(params.buildRevision)
+    workspaces:
+    - name: config-source
+      workspace: config-source
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: build-deploy-pipelinerun-
+spec:
+  serviceAccountName: pipeline
+  params:
+    - name: environment
+      value: "prod"
+    - name: argo-app-name
+      value: "api-product-prod"
+    - name: configGitUrl
+      value: "git@github.com:rogeriorocha/api-product-go.git"
+    - name: appImage
+      value: "rogeriosilvarocha/api"
+    - name: buildRevision
+      value: "6b7ffb630d25faac12e620a73569bf41c5bf2e8b"
+    - name: appGitUrl  
+      value: "git@github.com:rogeriorocha/api-product-go.git"
+  pipelineRef:
+    name: build-deploy
+  workspaces:
+    - name: config-source
+      emptyDir: {}
+    - name: app-source
+      emptyDir: {}
+---
+

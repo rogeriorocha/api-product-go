@@ -5,15 +5,15 @@ metadata:
 spec:
   params:
   - name: environment
-    default: "prod"
+#    default: "prod"
   - name: argo-app-name
-    default: "api-product-prod"
+#    default: "api-product-prod"
   - name: configGitUrl
-    default: "git@github.com:rogeriorocha/api-product-go.git"
+#    default: "git@github.com:rogeriorocha/api-product-go.git"
   - name: appImage
-    default: "rogeriosilvarocha/api"
+#    default: "rogeriosilvarocha/api"
   - name: buildRevision
-    default: "0.1"
+#    default: "0.1"
   workspaces:
   - name: config-source
   stepTemplate:
@@ -80,6 +80,17 @@ metadata:
   generateName: deploy-taskrun-
 spec:
   serviceAccountName: pipeline
+  params:
+    - name: environment
+      value: "prod"
+    - name: argo-app-name
+      value: "api-product-prod"
+    - name: configGitUrl
+      value: "git@github.com:rogeriorocha/api-product-go.git"
+    - name: appImage
+      value: "rogeriosilvarocha/api"
+    - name: buildRevision
+      value: "0.2"
   taskRef:
     name: deploy
   workspaces:
