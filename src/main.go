@@ -1,10 +1,9 @@
 package main
 
 import (
-	"net/http"
-
 	"example.com/api-product/controllers"
 	"github.com/gin-gonic/gin"
+	"errors" 
 )
 
 func main() {
@@ -30,7 +29,9 @@ func setupRouter() *gin.Engine {
 		examples := v1.Group("/examples")
 		{
 			examples.GET("ping", func(c *gin.Context) {
-				AbortMsg(500, "ERROR...", c) 
+				//c.AbortWithError(http.StatusUnauthorized, errors.Unauthorised).SetType(gin.ErrorTypePublic)
+				var err = errors.New("some error")
+				AbortMsg(500, err, c) 
 				return
 				//c.JSON(http.StatusOK, "pong")
 			})
