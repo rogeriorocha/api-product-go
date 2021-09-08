@@ -27,7 +27,7 @@ write REST API sample in ***golang***.
 - [Kubernetes Cluster](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/) (eg [k3d](https://k3d.io/) local cluster)
 - kubectl CLI
 - [Docker](https://www.docker.com/) - Container
-
+- [Istio](https://istio.io/) - Service Mesh
 - [Skaffold (Opc)](https://skaffold.dev/) - Local Kubernetes Development
 
 
