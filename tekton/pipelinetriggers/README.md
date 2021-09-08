@@ -1,43 +1,27 @@
 
-data="{\"ref\": \"${refname}\"}"
-data="{\"ref\": \"refs/heads/main\", \"head_commit\": {\"id\":\"55bff425ee4ac15d90030a8e117d9875b5d8822b\"}}"
 
+### manual trigger invoke
+```sh
+chmod +x run-trigger-manual.sh
+./run-trigger-manual.sh <COMMIT_ID>
+```
 
-sig=$(echo -n "${data}" | openssl dgst -sha1 -hmac "123" | awk '{print "X-Hub-Signature: sha1="$1}')
-
-
-curl -i \
-  -H 'X-GitHub-Event: push' \
-  -H "${sig}" \
-  -H 'Content-Type: application/json' \
-  -H 'Host: tekton-triggers.example.com' \
-  --data "${data}" \
-  http://localhost:8088
-
-
-
-curl -i \
-  -H 'X-GitHub-Event: push' \
-  -H sig 
-  -H 'X-Hub-Signature: sha1=123' \
-  -H 'Content-Type: application/json' \
-  -H 'Host : http://tekton-triggers.example.com' \
-  -d '{"ref":"refs/heads/main","head_commit":{"id":"123abc..."}}' \
-  http://localhost:8088/
 
 ### versions
+#### Tekton Pipeline/Trigger/Dashboard
 ```sh
 tkn version
-```
+
 Client version: 0.20.0
 Pipeline version: v0.27.3
 Triggers version: v0.16.0
 Dashboard version: v0.19.0
+```
 
-
+#### Kubernetes
 ```sh
 kubectl version -o yaml
-```
+
 clientVersion:
   buildDate: "2021-04-08T16:31:21Z"
   compiler: gc
@@ -58,10 +42,12 @@ serverVersion:
   major: "1"
   minor: "20"
   platform: linux/amd64
+```  
 
+#### ArgoCD / Rollout
 ```sh
 argocd version
-```
+
 argocd: v2.0.5+4c94d88.dirty
   BuildDate: 2021-07-23T05:12:02Z
   GitCommit: 4c94d886f56bcb2f9d5b3251fdc049c2d1354b88
@@ -70,14 +56,16 @@ argocd: v2.0.5+4c94d88.dirty
   Compiler: gc
   Platform: darwin/amd64
 argocd-server: v2.1.1+aab9542
+```
 
 ```sh
 kubectl argo rollouts version
-```
-kubectl-argo-rollouts: v1.0.4+c63b6c1
+
+  kubectl-argo-rollouts: v1.0.4+c63b6c1
   BuildDate: 2021-08-03T02:45:19Z
   GitCommit: c63b6c1f5134a9f19caae37765f1a8a145f62d7d
   GitTreeState: clean
   GoVersion: go1.16.3
   Compiler: gc
   Platform: darwin/amd64
+```  
