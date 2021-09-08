@@ -30,10 +30,19 @@ func setupRouter() *gin.Engine {
 		examples := v1.Group("/examples")
 		{
 			examples.GET("ping", func(c *gin.Context) {
-				c.JSON(http.StatusOK, "pong")
+				AbortMsg(500, "ERROR...", c) 
+				return
+				//c.JSON(http.StatusOK, "pong")
 			})
 		}
 	}
 
 	return r
+}
+
+func AbortMsg(code int, err error, c *gin.Context) {
+    c.String(code, "Oops! Please retry.")
+    // A custom error page with HTML templates can be shown by c.HTML()
+    c.Error(err)
+    c.Abort()
 }
