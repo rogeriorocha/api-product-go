@@ -108,8 +108,12 @@ skaffold dev --port-forward  --trigger polling
 
 * Set API_URL
 ```shell=
-export API_URL="http://localhost:8080/api/v1/products"
+API_URL="http://localhost:8080/api/v1/products"
+API_URL="http://localhost:8088/api/api/v1/products"
 ```
+
+curl -H 'Host: prod.api.com' $API_URL
+
 
 * ***get*** ALL products
 ```shell=
@@ -118,11 +122,13 @@ curl $API_URL
 
 * ***post*** add one product
 ```shell=
-curl $API_URL \
+curl  \
+    -H 'Host: prod.api.com' \
     --include \
     --header "Content-Type: application/json" \
     --request "POST" \
-    --data '{"id": "1","name": "bike","value": 4009.99}'
+    --data '{"id": "1","name": "bike","value": 4009.99}' \
+    $API_URL
 
 curl $API_URL \
     --include \
