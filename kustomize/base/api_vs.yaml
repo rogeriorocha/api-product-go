@@ -1,0 +1,22 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: api-vs
+spec:
+  hosts:
+  - "prod.api.com"
+  gateways:
+  - default-gw
+  http:
+  - route:
+    - destination:
+        host: api-service
+        port:
+          number: 8080
+    match:
+    - uri:
+        prefix: /api/
+    rewrite:
+      uri: /          
+---
