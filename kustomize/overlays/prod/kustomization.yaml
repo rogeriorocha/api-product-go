@@ -5,9 +5,11 @@ namespace: prod
 
 patchesStrategicMerge:
 - mysql_env.yaml
+- api_vs.yaml
 - api_env.yaml
 - api_replicas.yaml
 - api_rollout.yaml
+- istio-default-gw.yaml
 
 
 configMapGenerator:
