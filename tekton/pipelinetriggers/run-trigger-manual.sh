@@ -14,10 +14,18 @@ sig=$(echo -n "${data}" | openssl dgst -sha1 -hmac "123" | awk '{print "X-Hub-Si
 
 echo SIG=$sig
 
-curl -i \
+echo curl -i \
   -H 'X-GitHub-Event: push' \
   -H "${sig}" \
   -H 'Content-Type: application/json' \
   -H 'Host: tekton-triggers.example.com' \
   --data "${data}" \
-  http://localhost:8088
+  http://20.206.73.31
+
+
+curl -i \
+  -H 'X-GitHub-Event: push' \
+  -H "${sig}" \
+  -H 'Content-Type: application/json' \
+  --data "${data}" \
+  http://20.206.73.31/tekton
