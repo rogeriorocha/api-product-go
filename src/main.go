@@ -32,7 +32,7 @@ func setupRouter() *gin.Engine {
 		{
 
 			examples.GET("hello", func(c *gin.Context) {
-				c.JSON(http.StatusOK, "John")
+				c.JSON(http.StatusOK, "JM")
 				//err1 := errors.New("math: square root of negative number")
 				//AbortMsg(http.StatusInternalServerError, err1 , c)
 			})
