@@ -23,7 +23,7 @@ spec:
       - name: appGitUrl
         value: 'git@github.com:rogeriorocha/api-product-go.git'
       - name: configGitUrl
-        value: 'git@github.com:rogeriorocha/api-product-go.git'
+        value: 'git@github.com:rogeriorocha/product-testing-config.git'
       - name: appImage
         value: 'rogeriosilvarocha/api'
       - name: argo-app-name
