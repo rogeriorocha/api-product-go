@@ -10,13 +10,21 @@ spec:
     name: api
   strategy:
     canary:
+      canaryService: canary-api-service
+      stableService: api-service  
+      trafficRouting:
+        istio:
+          virtualService: 
+            name: api-vs
+            routes:             
+              - primary
       analysis:
         templates:
         - templateName: success-rate
         startingStep: 2 # delay starting analysis run until setWeight: 20%
         args:
         - name: service-name
-          value: api-service.prod.svc.cluster.local
+          value: canary-api-service.prod.svc.cluster.local
 #        - name: handler
 #          value: "/ping"    
       steps:

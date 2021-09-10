@@ -5,3 +5,18 @@ metadata:
 spec:
   hosts:
   - "prod.api.com"
+  http:
+  - name: primary 
+    route:
+    - destination:
+        host: api-service
+      weight: 100
+    - destination:
+        host: canary-api-service
+      weight: 0  
+    match:  
+    - uri:
+        prefix: /api/
+    rewrite:
+      uri: /        
+  

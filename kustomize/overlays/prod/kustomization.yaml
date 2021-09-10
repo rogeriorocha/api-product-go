@@ -11,7 +11,6 @@ patchesStrategicMerge:
 - api_rollout.yaml
 - istio-default-gw.yaml
 
-
 configMapGenerator:
 - literals:
   - MYSQL_USER=u_product
