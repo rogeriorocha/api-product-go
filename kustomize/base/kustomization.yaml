@@ -8,6 +8,7 @@ resources:
   - api_svc.yaml
   - api_vs.yaml
   - istio-default-gw.yaml
+  - argo-analysis-template.yaml
   
 configurations:
   - https://argoproj.github.io/argo-rollouts/features/kustomize/rollout-transform.yaml  

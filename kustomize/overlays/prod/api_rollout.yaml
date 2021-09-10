@@ -3,13 +3,22 @@ kind: Rollout
 metadata:
   name: api
 spec:
-  replicas: 2
+  replicas: 5
   workloadRef:
     apiVersion: apps/v1
     kind: Deployment
     name: api
   strategy:
     canary:
+      analysis:
+        templates:
+        - templateName: success-rate
+        startingStep: 2 # delay starting analysis run until setWeight: 20%
+        args:
+        - name: service-name
+          value: api-service
+#        - name: handler
+#          value: "/ping"    
       steps:
         - setWeight: 10
         - pause:
