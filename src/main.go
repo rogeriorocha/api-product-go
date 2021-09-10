@@ -3,8 +3,9 @@ package main
 import (
 	"example.com/api-product/controllers"
 	"github.com/gin-gonic/gin"
-//	"errors" 
-	"net/http" 
+
+	//	"errors"
+	"net/http"
 )
 
 func main() {
@@ -29,9 +30,9 @@ func setupRouter() *gin.Engine {
 		}
 		examples := v1.Group("/examples")
 		{
-			
+
 			examples.GET("hello", func(c *gin.Context) {
-				c.JSON(http.StatusOK, "RPSR")
+				c.JSON(http.StatusOK, "Nicolas Cage")
 				//err1 := errors.New("math: square root of negative number")
 				//AbortMsg(http.StatusInternalServerError, err1 , c)
 			})
@@ -42,8 +43,8 @@ func setupRouter() *gin.Engine {
 }
 
 func AbortMsg(code int, err error, c *gin.Context) {
-    c.String(code, "Oops! Please retry.")
-    // A custom error page with HTML templates can be shown by c.HTML()
-    c.Error(err)
-    c.Abort()
+	c.String(code, "Oops! Please retry.")
+	// A custom error page with HTML templates can be shown by c.HTML()
+	c.Error(err)
+	c.Abort()
 }
