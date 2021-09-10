@@ -22,14 +22,14 @@ spec:
       steps:
         - setWeight: 10
         - pause:
-            duration: 40
+            duration: 10
         #- pause: {}
         - setWeight: 20
         - pause:
-            duration: 10m
+            duration: 30
         - setWeight: 60
         - pause:
             duration: 10
         - setWeight: 80
         - pause:
-            duration: 40
+            duration: 30

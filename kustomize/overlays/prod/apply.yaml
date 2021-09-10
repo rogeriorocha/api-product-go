@@ -1,0 +1,190 @@
+apiVersion: v1
+data:
+  MYSQL_DATABASE: product
+  MYSQL_ROOT_HOST: '%'
+  MYSQL_USER: u_product
+kind: ConfigMap
+metadata:
+  name: product-mysql-config-bkgm6fb5f6
+  namespace: prod
+---
+apiVersion: v1
+data:
+  MYSQL_PASSWORD: c2VuaGFAcHJvZA==
+  MYSQL_ROOT_PASSWORD: cm9vdEBwcm9k
+kind: Secret
+metadata:
+  name: product-mysql-credentials-9f5h2tm9fk
+  namespace: prod
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+  namespace: prod
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mysql
+  name: mysql
+  namespace: prod
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: rollout-canary
+  name: api
+  namespace: prod
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        app: api
+    spec:
+      containers:
+      - env:
+        - name: env
+          value: in-prod
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_PASSWORD
+              name: product-mysql-credentials-9f5h2tm9fk
+        - name: DB_USER
+          value: u_product
+        - name: DB_HOST
+          value: mysql
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_NAME
+          value: product
+        image: rogeriosilvarocha/api:8e9ff93e201cda647128f7fd890dae77823742be
+        name: api
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 600m
+            memory: 128Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - env:
+        - name: env
+          value: in-prod
+        envFrom:
+        - configMapRef:
+            name: product-mysql-config-bkgm6fb5f6
+        - secretRef:
+            name: product-mysql-credentials-9f5h2tm9fk
+        image: mysql:5.7
+        name: mysql
+        ports:
+        - containerPort: 3306
+          name: mysql
+        resources:
+          limits:
+            cpu: 400m
+            memory: 512Mi
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: api
+  namespace: prod
+spec:
+  replicas: 2
+  strategy:
+    canary:
+      steps:
+      - setWeight: 10
+      - pause:
+          duration: 40
+      - setWeight: 20
+      - pause:
+          duration: 10
+      - setWeight: 60
+      - pause:
+          duration: 10
+      - setWeight: 80
+      - pause:
+          duration: 40
+  workloadRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: default-gw
+  namespace: prod
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - prod.api.com
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: api-vs
+  namespace: prod
+spec:
+  gateways:
+  - default-gw
+  hosts:
+  - prod.api.com
+  http:
+  - match:
+    - uri:
+        prefix: /api/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: api-service
+        port:
+          number: 8080
