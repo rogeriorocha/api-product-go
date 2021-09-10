@@ -4,12 +4,11 @@ kind: VirtualService
 metadata:
   name: api-vs
 spec:
-  hosts:
-  - "prod.api.com"
   gateways:
   - default-gw
   http:
-  - route:
+  - name: primary 
+    route:
     - destination:
         host: api-service
         port:
