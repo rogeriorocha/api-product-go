@@ -3,7 +3,7 @@ package main
 import (
 	"example.com/api-product/controllers"
 	"github.com/gin-gonic/gin"
-//	"errors" 
+	"errors" 
 	"net/http" 
 )
 
@@ -31,7 +31,9 @@ func setupRouter() *gin.Engine {
 		{
 			
 			examples.GET("hello", func(c *gin.Context) {
-				c.JSON(http.StatusOK, "RPSR")
+				//c.JSON(http.StatusOK, "RPSR")
+				err1 := errors.New("math: square root of negative number")
+				AbortMsg(http.StatusInternalServerError, err1 , c)
 			})
 		}
 	}
