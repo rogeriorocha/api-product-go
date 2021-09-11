@@ -29,4 +29,4 @@ resources:
 images:
 - name: rogeriosilvarocha/api
   newName: rogeriosilvarocha/api
-  newTag: 0ca7b8353755b428c1c4f32d8d62c24af87d972c
+  newTag: d0d6aeea166fe6a2e88bc4a41f8f204677be2dc7
