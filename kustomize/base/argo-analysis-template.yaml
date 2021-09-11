@@ -20,6 +20,7 @@ spec:
           sum(irate(
             istio_requests_total{reporter="source",destination_service=~"{{args.service-name}}"}[5m]
           ))
+          > 0 or on() vector(1)
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
