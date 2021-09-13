@@ -34,7 +34,7 @@ func setupRouter() *gin.Engine {
 
 			examples.GET("hello", func(c *gin.Context) {
 
-				c.JSON(http.StatusOK, "Keyla JM RPSR")
+				c.JSON(http.StatusOK, "RPSR + Keyla = JM")
 			})
 
 			examples.GET("error", func(c *gin.Context) {
