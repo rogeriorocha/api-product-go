@@ -1,9 +1,31 @@
-#!/bin/bash
-
-#set -e
+#!/usr/bin/env bash
+#
+#
+# next version
+# - argo rollout only working w port 3100
 
 vkill=false
 vstart=false
+
+opens=(
+  ''
+  ''  
+  ''
+  'open http://localhost:PORT' 
+  'open http://localhost:PORT'   
+  'open http://localhost:PORT'     
+)
+
+cmds=('istioctl dashboard prometheus -p PORT' 
+      'istioctl dashboard grafana -p PORT' 
+      'istioctl dashboard kiali -p PORT'
+      'kubectl -n tekton-pipelines port-forward svc/tekton-dashboard PORT:9097'
+      'kubectl -n argocd port-forward svc/argocd-server PORT:80'
+      'kubectl argo rollouts dashboard -n prod'
+
+)
+ports=(9090 3000 20001 9097 8088 3100)
+dscs=('Prometheus' 'Grafana' 'Kiali' 'Tekton' 'ArgoCD' 'Rollout')
 
 function show_usage (){
     printf "Usage: $0 [options [parameters]]\n"
@@ -33,18 +55,6 @@ while [ ! -z "$1" ]; do
          vkill=true
          #echo "kill: $1"
          ;;
-     --number|-n)
-         shift
-         echo "You entered number as: $1"
-         ;;
-     --collect|-c)
-         shift
-         echo "You entered collect as: $1"
-         ;;
-     --timeout|-t)
-        shift
-        echo "You entered timeout as: $1"
-         ;;
      *)
         printf "Error, parameter not found...\n"
         show_usage
@@ -56,93 +66,74 @@ done
 
 kill() {
   port=$1
-  echo "port=${port}"
   lsof -i :"$port" -sTCP:LISTEN |awk 'NR > 1 {print $2}' | uniq | xargs kill -15
 }
 
 killAll() {
-  arPort=( 3000 9090 8088 9097 20001 3100)
-  for i in "${arPort[@]}"
-  do
-    kill $i
+  
+  for (( i = 0; i < ${#dscs[@]}; ++i )); do
+      #v=$((i+1))
+      let "v=i+1"
+      echo "${v}-${dscs[i]}:${ports[i]}..."
+      kill ${ports[i]}
   done
 }
 
-startAll() {
-  # ===== Tekton
-  port=9097
-  app="Tekton"
-  a="$(lsof -i :${port}|grep -i LISTEN|wc -l)"
-  #echo "${a}"
-  if [[ "${a}" -ge 2 ]]; then
-    echo "${app}:${port} in use -> http://localhost:${port}"
+args=("$@")
+start() {
+  dsc="$1"
+  cmd="$2"
+  port="$3"
+  open="$4"
+
+  dsc=`echo $dsc | sed -e 's/\"//g'`
+  cmd=`echo $cmd | sed -e 's/\"//g'`
+  port=`echo $port | sed -e 's/\"//g'`
+  open=`echo $open | sed -e 's/\"//g'`
+
+  printf "======> $dsc "
+  #printf "CMD:$cmd \n"
+  #printf "OPEN:$open \n"
+   #printf "PORT:$port "
+  
+  #port=`echo $port | sed -e 's/\"//g'`
+  
+  exec="$(lsof -i :${port}|grep -i LISTEN|wc -l)" 
+  
+  if [[ "${exec}" -ge 1 ]]; then
+    printf "in use -> http://localhost:${port}\n"
   else
-    echo "${app} ${port} not"
-    kubectl -n tekton-pipelines port-forward svc/tekton-dashboard 9097:9097 &
-    sleep 2
-    open http://localhost:9097
-  fi
-  # ======= KIALI
-  port=20001
-  app="Kialli"
-  a="$(lsof -i :${port}|grep -i LISTEN|wc -l)"
-  if [[ "${a}" -ge 2 ]]; then
-    echo "${app}:${port} in use -> http://localhost:${port}"
-  else
-    echo "${app}:${port} starting..."
-    istioctl dashboard kiali &
-  fi
-  #=======  Argo Rollouts
-  app="Argo rollout"
-  port=3100
-  a="$(lsof -i :${port}|grep -i LISTEN|wc -l)"
-  if [[ "${a}" -ge 1 ]]; then
-    echo "${app}:${port} in use -> http://localhost:${port}"
-  else
-    echo "${app}:${port} starting..."
-    kubectl argo rollouts dashboard -n prod &
-    sleep 2
-    open http://localhost:3100
-  fi
-  #=======  Argo CD GitOps
-  app="Argo CD GitOps"
-  port=8088
-  a="$(lsof -i :${port}|grep -i LISTEN|wc -l)"
-  if [[ "${a}" -ge 1 ]]; then
-    echo "${app}:${port} in use -> http://localhost:${port}"
-  else
-    echo "${app}:${port} starting..."
-    kubectl -n argocd port-forward svc/argocd-server 8088:80 &
-    sleep 2
-    open http://localhost:8088
-  fi
-  #=======  Prometheus
-  app="Prometheus"
-  port=9090
-  a="$(lsof -i :${port}|grep -i LISTEN|wc -l)"
-  if [[ "${a}" -ge 1 ]]; then
-    echo "${app}:${port} in use -> http://localhost:${port}"
-  else
-    echo "${app}:${port} starting..."
-    istioctl dashboard prometheus &
-  fi
-  #=======  Grafana
-  app="Grafana"
-  port=3000
-  a="$(lsof -i :${port}|grep -i LISTEN|wc -l)"
-  if [[ "${a}" -ge 1 ]]; then
-    echo "${app}:${port} in use -> http://localhost:${port}"
-  else
-    echo "${app}:${port} starting..."
-    istioctl dashboard grafana &
+    printf "starting...\n"
+    run=$(echo "$cmd" | sed "s/PORT/$port/")
+    #run=`echo $run | sed -e 's/\"//g'`
+    ($run) &
+
+    if ([[ ! -z "$open" ]]) ; then
+      run=$(echo "$open" | sed "s/PORT/$port/")
+      sleep 1
+      ($run)
+    fi
   fi
 }
 
+startAll() {
+  for (( i = 0; i < ${#dscs[@]}; ++i )); do
+      cmd=${cmds[i]}
+      port=${ports[i]}
+      dsc=${dscs[i]}
+      open=${opens[i]}
+      start "\"${dsc}\"" "\"${cmd}\"" "\"${port}\"" "\"${open}\"" 
+      #if [[ "${i}" -ge 4 ]]; then
+      #  exit;
+      #fi
+  done
+}
+
 if $vkill; then 
-  printf "===== Kill...\n"
-  killAll
+  printf "====================> Kill...\n"
+  killAll service
 fi
 if $vstart; then 
-  printf "===== Start...\n"
+  printf "====================> Start...\n"
   startAll
 fi
