@@ -16,26 +16,27 @@ opens=(
   'open http://localhost:PORT'     
 )
 
-cmds=('istioctl dashboard prometheus -p PORT' 
-      'istioctl dashboard grafana -p PORT' 
-      'istioctl dashboard kiali -p PORT'
-      'kubectl -n tekton-pipelines port-forward svc/tekton-dashboard PORT:9097'
-      'kubectl -n argocd port-forward svc/argocd-server PORT:80'
-      'kubectl argo rollouts dashboard -n prod'
-
+cmds=(
+  'istioctl dashboard prometheus -p PORT' 
+  'istioctl dashboard grafana -p PORT' 
+  'istioctl dashboard kiali -p PORT'
+  'kubectl -n tekton-pipelines port-forward svc/tekton-dashboard PORT:9097'
+  'kubectl -n argocd port-forward svc/argocd-server PORT:80'
+  'kubectl argo rollouts dashboard -n prod'
 )
+
 ports=(9090 3000 20001 9097 8088 3100)
 dscs=('Prometheus' 'Grafana' 'Kiali' 'Tekton' 'ArgoCD' 'Rollout')
 
 function show_usage (){
-    printf "Usage: $0 [options [parameters]]\n"
-    printf "\n"
-    printf "Options:\n"
-    printf " -s|--start  start \n"
-    printf " -k|--kill   kill\n"    
-    printf " -h|--help, Print help\n"
+  printf "Usage: $0 [options [parameters]]\n"
+  printf "\n"
+  printf "Options:\n"
+  printf " -s|--start  start \n"
+  printf " -k|--kill   kill\n"    
+  printf " -h|--help, Print help\n"
 
-return 0
+  return 0
 }
 
 if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]];then
@@ -72,10 +73,10 @@ kill() {
 killAll() {
   
   for (( i = 0; i < ${#dscs[@]}; ++i )); do
-      #v=$((i+1))
-      let "v=i+1"
-      echo "${v}-${dscs[i]}:${ports[i]}..."
-      kill ${ports[i]}
+    #v=$((i+1))
+    let "v=i+1"
+    echo "${v}-${dscs[i]}:${ports[i]}..."
+    kill ${ports[i]}
   done
 }
 
