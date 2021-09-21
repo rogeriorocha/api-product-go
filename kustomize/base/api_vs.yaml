@@ -18,4 +18,3 @@ spec:
         prefix: /api/
     rewrite:
       uri: /          
----

@@ -20,4 +20,3 @@ spec:
     - ref: build-deploy-binding
     template:
       ref: build-deploy-template
----
