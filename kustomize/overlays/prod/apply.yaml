@@ -85,10 +85,10 @@ spec:
         name: api
         ports:
         - containerPort: 8080
-        resources:
-          limits:
-            cpu: 600m
-            memory: 128Mi
+#        resources:
+#          limits:
+#            cpu: 600m
+#            memory: 128Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
