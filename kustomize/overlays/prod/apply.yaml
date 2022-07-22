@@ -119,10 +119,10 @@ spec:
         ports:
         - containerPort: 3306
           name: mysql
-        resources:
-          limits:
-            cpu: 400m
-            memory: 512Mi
+#        resources:
+#          limits:
+#            cpu: 400m
+#            memory: 512Mi
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
