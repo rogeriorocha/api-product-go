@@ -3,7 +3,7 @@ kind: Rollout
 metadata:
   name: api
 spec:
-  replicas: 5
+  replicas: 2
   workloadRef:
     apiVersion: apps/v1
     kind: Deployment
