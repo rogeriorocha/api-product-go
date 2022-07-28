@@ -21,7 +21,7 @@ spec:
       analysis:
         templates:
         - templateName: success-rate
-        startingStep: 4 # delay starting analysis run until setWeight: 20%
+        startingStep: 3 # delay starting analysis run until setWeight: 50%
         args:
         - name: service-name
           value: canary-api-service.prod.svc.cluster.local
