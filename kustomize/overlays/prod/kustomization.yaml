@@ -10,7 +10,6 @@ patchesStrategicMerge:
 - api_replicas.yaml
 - api_rollout.yaml
 - istio-default-gw.yaml
-- namespace.yaml
 
 configMapGenerator:
 - literals:
@@ -27,6 +26,8 @@ secretGenerator:
   type: Opaque
 resources:
 - ../../base
+- namespace.yaml
+
 images:
 - name: rogeriosilvarocha/api
   newName: rogeriosilvarocha/api
