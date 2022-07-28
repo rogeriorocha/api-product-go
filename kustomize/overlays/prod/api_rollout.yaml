@@ -33,7 +33,8 @@ spec:
         startingStep: 4 # delay starting analysis run until setWeight: 50%
         args:
         - name: service-name
-          value: canary-api-service.prod.svc.cluster.local
+          value: canary-api-service
+#          value: canary-api-service.prod.svc.cluster.local
 #        - name: handler
 #          value: "/ping"    
 
