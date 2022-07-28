@@ -32,4 +32,4 @@ resources:
 images:
 - name: rogeriosilvarocha/api
   newName: rogeriosilvarocha/api
-  newTag: f193c53
+  newTag: "0.1"
