@@ -27,6 +27,7 @@ secretGenerator:
 resources:
 - ../../base
 - namespace.yaml
+- success-rate-prometheus.yaml
 
 images:
 - name: rogeriosilvarocha/api
