@@ -56,9 +56,9 @@ func setupRouter() *gin.Engine {
 			examples.GET("/helloworld", Helloworld)
 
 			examples.GET("hello", func(c *gin.Context) {
-				c.JSON(http.StatusOK, "Hello GitOps")
-				//err1 := errors.New("math: square root of negative number")
-				//AbortMsg(http.StatusInternalServerError, err1, c)
+				//c.JSON(http.StatusOK, "hi, i am 2.0")
+				err1 := errors.New("math: square root of negative number")
+				AbortMsg(http.StatusInternalServerError, err1, c)
 			})
 
 			examples.GET("error", func(c *gin.Context) {

@@ -33,7 +33,17 @@ func (repository *ProductRepo) CreateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, Product)
 }
 
-//get Products
+// GetProducts godoc
+// @Summary      get all prods
+// @Description  get all products
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  models.Product
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /accounts/{id} [get]
 func (repository *ProductRepo) GetProducts(c *gin.Context) {
 	var Product []models.Product
 
