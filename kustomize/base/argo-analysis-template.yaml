@@ -8,9 +8,9 @@ spec:
   metrics:
   - name: success-rate
     interval: 1m
-    count: 5
+    count: 3
     successCondition: result[0] >= 0.90 || result[0] == nil
-    failureLimit: 3
+    failureLimit: 1
     provider:
       prometheus:
         address: http://prometheus.istio-system.svc.cluster.local:9090
