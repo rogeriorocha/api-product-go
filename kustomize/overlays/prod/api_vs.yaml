@@ -4,7 +4,8 @@ metadata:
   name: api-vs
 spec:
   hosts:
-  - "prod.api.com"
+  - "*"  
+#  - "prod.api.com"
   http:
   - name: primary 
     route:

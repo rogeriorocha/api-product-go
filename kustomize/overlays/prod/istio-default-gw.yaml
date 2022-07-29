@@ -11,4 +11,5 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "prod.api.com"
+    - "*"
+#    - "prod.api.com"
