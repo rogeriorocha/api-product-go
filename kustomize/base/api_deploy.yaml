@@ -19,8 +19,27 @@ spec:
         app: api
     spec:
       containers:
+      
         - name: api
-          image: rogeriosilvarocha/api:0.1
+          image: rogeriosilvarocha/api:1.0
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+              httpHeaders:
+              - name: Custom-Header
+                value: readinessProbe healthz
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+              httpHeaders:
+              - name: Custom-Header
+                value: livenessProbe healthz
+            initialDelaySeconds: 5
+            periodSeconds: 10
           ports: 
           - containerPort: 8080
           env: 

@@ -3,14 +3,36 @@ package main
 import (
 	"errors"
 
-	"example.com/api-product/controllers"
-	"github.com/gin-gonic/gin"
-
 	"net/http"
+
+	"example.com/api-product/controllers"
+	"example.com/api-product/docs"
+	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @BasePath /api/v1
+
+// PingExample godoc
+// @Summary ping example
+// @Schemes
+// @Description do ping
+// @Tags example
+// @Accept json
+// @Produce json
+// @Success 200 {string} Helloworld
+// @Router /example/helloworld [get]
+func Helloworld(g *gin.Context) {
+	g.JSON(http.StatusOK, "helloworld")
+}
+func Healthcheck(g *gin.Context) {
+	g.JSON(http.StatusOK, "Healthcheck hi")
+}
 
 func main() {
 	r := setupRouter()
+
 	_ = r.Run(":8080")
 }
 
@@ -18,7 +40,7 @@ func setupRouter() *gin.Engine {
 	r := gin.Default()
 
 	ProductRepo := controllers.New()
-
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{
 		products := v1.Group("/products")
@@ -29,12 +51,13 @@ func setupRouter() *gin.Engine {
 			products.PUT(":id", ProductRepo.UpdateProduct)
 			products.DELETE(":id", ProductRepo.DeleteProduct)
 		}
-		examples := v1.Group("/examples")
+		examples := v1.Group("/example")
 		{
+			examples.GET("/helloworld", Helloworld)
 
 			examples.GET("hello", func(c *gin.Context) {
-
-				c.JSON(http.StatusOK, "ZUP")
+				err1 := errors.New("math: square root of negative number")
+				AbortMsg(http.StatusInternalServerError, err1, c)
 			})
 
 			examples.GET("error", func(c *gin.Context) {
@@ -44,6 +67,8 @@ func setupRouter() *gin.Engine {
 
 		}
 	}
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	r.GET("/healthz", Healthcheck)
 
 	return r
 }
