@@ -42,7 +42,8 @@ jobs:
       with:
         context: ./src
         push: true
-        tags: bdmg/api-product:latest
-            | bdmg/api-product:v2
+        tags: |
+          bdmg/api-product:latest
+          bdmg/api-product:v2
 #        tags: ${{ steps.meta.outputs.tags }}
 #        labels: ${{ steps.meta.outputs.labels }}
