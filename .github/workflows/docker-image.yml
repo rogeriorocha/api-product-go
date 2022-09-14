@@ -6,7 +6,11 @@ on:
   pull_request:
     branches: [ "main" ]
     
-on: workflow_dispatch
+  workflow_call:
+    inputs:
+      username:
+        required: false
+        type: string    
 
 jobs:
 
