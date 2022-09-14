@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"example.com/api-product/controllers"
-	"example.com/api-product/docs"
+//	"example.com/api-product/docs"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
