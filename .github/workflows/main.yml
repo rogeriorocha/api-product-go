@@ -12,7 +12,7 @@ jobs:
         uses: rogeriorocha/hello-world-composite-action@master
         with:
           entrypoint: /test   
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
       - run: echo random-number ${{ steps.foo.outputs.random-number }}
         shell: bash
