@@ -9,7 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: foo
-        uses: rogeriorocha/hello-world-composite-action@master
+        #uses: rogeriorocha/hello-world-composite-action@master
+        uses: rogeriorocha/hello-world-composite-action/.github/workflows/sample_action.yml@master
         with:
           entrypoint: /test
           who-to-greet: 'Mona the Octocat'
