@@ -11,6 +11,7 @@ jobs:
       - id: foo
         uses: rogeriorocha/hello-world-composite-action@master
         with:
+          entrypoint: /test
           who-to-greet: 'Mona the Octocat'
       - run: echo random-number ${{ steps.foo.outputs.random-number }}
         shell: bash
