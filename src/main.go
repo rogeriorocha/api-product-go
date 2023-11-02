@@ -6,8 +6,9 @@ import (
 	"net/http"
 
 	"example.com/api-product/controllers"
-//	"example.com/api-product/docs"
+	//	"example.com/api-product/docs"
 	"github.com/gin-gonic/gin"
+	"github.com/penglongli/gin-metrics/ginmetrics"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -39,8 +40,23 @@ func main() {
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 
+	// enable Prometheus GIN
+	// get global Monitor object
+	m := ginmetrics.GetMonitor()
+
+	// +optional set metric path, default /debug/metrics
+	m.SetMetricPath("/metrics")
+	// +optional set slow time, default 5s
+	m.SetSlowTime(10)
+	// +optional set request duration, default {0.1, 0.3, 1.2, 5, 10}
+	// used to p95, p99
+	m.SetDuration([]float64{0.1, 0.3, 1.2, 5, 10})
+
+	// set middleware for gin
+	m.Use(r)
+
 	ProductRepo := controllers.New()
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	//docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{
 		products := v1.Group("/products")
